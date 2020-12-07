@@ -52,7 +52,7 @@ public class Mono_Synth implements KeyListener {
 		  // create an AudioContext
 		  ac = new AudioContext();
 		 
-		  // create a sine generator
+		  // create a sine generator can create as many as desired and change the frequency to layer sounds
 		  sine = new WavePlayer(ac, 440.0f, Buffer.SAW);
 		  sineTwo = new WavePlayer(ac, 880.0f, Buffer.SAW);
 		  
@@ -63,17 +63,14 @@ public class Mono_Synth implements KeyListener {
 		  sineGain = new Gain(ac, 1, gainGlide);
 		  
 		  
-		  // add the sine generator as an input to the Gain
+		  // add the sine generator as an input to the Gain can layer as many as desired
 		  sineGain.addInput(sine);
 		  sineGain.addInput(sineTwo);
 		 
-		 
-		  
 		  // add the Gain as an input to the master output, ac.out
 		  ac.out.addInput(sineGain);
 		  
-		 
-		  
+		  //starts the Audio context
 		  ac.start();
 		  
 		  //open frame
@@ -97,7 +94,7 @@ public class Mono_Synth implements KeyListener {
 		int octave = e.getKeyCode();
 		int sineSquare = e.getKeyCode();
 		
-		 
+		//loop through map to see if key pressed code = csv key and sends frequency value to buffer
 		Map<Integer, Float> hashMap =
 				map.entrySet().stream().collect(Collectors.toMap(
                         entry -> Integer.parseInt(entry.getKey()),
@@ -106,32 +103,16 @@ public class Mono_Synth implements KeyListener {
 		for (Map.Entry mapElement : hashMap.entrySet()) { 
 			int note = (int) mapElement.getKey(); 
 			Float frequency = ((Float)mapElement.getValue()); 
-			
-			if(sineSquare == KeyEvent.VK_1 ) {
-				sine.setBuffer(Buffer.SINE);
-				sineTwo.setBuffer(Buffer.SINE);
-				frame.getContentPane().setBackground(Color.magenta);
-			}
-			if(sineSquare == KeyEvent.VK_2 ) {
-				sine.setBuffer(Buffer.SQUARE);
-				sineTwo.setBuffer(Buffer.SQUARE);
-				frame.getContentPane().setBackground(Color.GREEN);
-			}
-			if(sineSquare == KeyEvent.VK_3 ) {
-				sine.setBuffer(Buffer.SAW);
-				sineTwo.setBuffer(Buffer.SAW);
-				frame.getContentPane().setBackground(Color.BLUE);
-			}
-			
+		
 			if(compKey == note) {
 				s1 = true;
 				gainGlide.setValue(0.9f);
 				sine.setFrequency(frequency);
 				sineTwo.setFrequency(frequency / 2);
 				frame.getContentPane().setBackground(Color.CYAN);
-				
 			
 			}
+		//if key pressed = "SHIFT" changes the octave 1 up, allowing the computer keyboard to play 2 octaves using the same keys as octave 1
 			if(octave == KeyEvent.VK_SHIFT) {
 				s2 = true;
 			}
@@ -141,14 +122,34 @@ public class Mono_Synth implements KeyListener {
 				frame.getContentPane().setBackground(Color.yellow);
 				
 			}
-			if(sineSquare == KeyEvent.VK_ENTER) {
-				System.exit(0);
+		//patch bank - patch at key "1" is a sine wave
+			if(sineSquare == KeyEvent.VK_1 ) {
+				sine.setBuffer(Buffer.SINE);
+				sineTwo.setBuffer(Buffer.SINE);
+				frame.getContentPane().setBackground(Color.magenta);
 			}
+		//patch bank - patch at key "2" is a square wave
+			if(sineSquare == KeyEvent.VK_2 ) {
+				sine.setBuffer(Buffer.SQUARE);
+				sineTwo.setBuffer(Buffer.SQUARE);
+				frame.getContentPane().setBackground(Color.GREEN);
+			}
+		//patch bank - patch at key "4" is a saw wave
+			if(sineSquare == KeyEvent.VK_3 ) {
+				sine.setBuffer(Buffer.SAW);
+				sineTwo.setBuffer(Buffer.SAW);
+				frame.getContentPane().setBackground(Color.BLUE);
+			}
+		//keys "UP" and "DOWN" controls the sustain of the note and increments or decrements gain glide by 50
 			if(compKey == KeyEvent.VK_UP) {
 				gainGlide.setGlideTime(gainGlide.getGlideTime() + 50.00f);
 			}
 			if(compKey == KeyEvent.VK_DOWN) {
 				gainGlide.setGlideTime(gainGlide.getGlideTime() - 50.00f);
+			}
+		//"ENTER" key terminates the program
+			if(sineSquare == KeyEvent.VK_ENTER) {
+				System.exit(0);
 			}
 			
 		} 
@@ -160,7 +161,7 @@ public class Mono_Synth implements KeyListener {
 		int compKey = e.getKeyCode();
 		int octave = e.getKeyCode();
 		int sineSquare = e.getKeyCode();
-		
+	//key released goes through the map and when the key is released, sets the gain value to 0 to act as the same as releasing piano key	
 		Map<Integer, Float> hashMap =
 				map.entrySet().stream().collect(Collectors.toMap(
                         entry -> Integer.parseInt(entry.getKey()),
@@ -183,6 +184,8 @@ public class Mono_Synth implements KeyListener {
 			}
 		} 
 	}
+	
+	//creates a simple color changing window when program starts, colors change based on keys pressed
 	public void keyDemo(){
 	
 		
@@ -194,6 +197,7 @@ public class Mono_Synth implements KeyListener {
 		frame.addKeyListener(this);
 		
 	}
+	//uses buffered reader to read "sinePatch.csv" file and parses the columns into a key:value pair HashMap
 	public Map<String, String> keyToFrequencyFileReader() throws IOException {
 	
 			String line = "";
