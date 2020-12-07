@@ -24,7 +24,7 @@ import net.beadsproject.beads.ugens.Gain;
 import net.beadsproject.beads.ugens.Glide;
 import net.beadsproject.beads.ugens.WavePlayer;
 
-public class Hello_Midi implements KeyListener {
+public class Mono_Synth implements KeyListener {
 	
 	WavePlayer sine;
 	WavePlayer sineTwo;
@@ -42,7 +42,7 @@ public class Hello_Midi implements KeyListener {
 	
 	public static void main(String[] args) throws IOException
 	{
-		Hello_Midi synth = new Hello_Midi();
+		Mono_Synth synth = new Mono_Synth();
 		synth.setup();
 	}
 	
@@ -109,14 +109,17 @@ public class Hello_Midi implements KeyListener {
 			
 			if(sineSquare == KeyEvent.VK_1 ) {
 				sine.setBuffer(Buffer.SINE);
+				sineTwo.setBuffer(Buffer.SINE);
 				frame.getContentPane().setBackground(Color.magenta);
 			}
 			if(sineSquare == KeyEvent.VK_2 ) {
 				sine.setBuffer(Buffer.SQUARE);
+				sineTwo.setBuffer(Buffer.SQUARE);
 				frame.getContentPane().setBackground(Color.GREEN);
 			}
 			if(sineSquare == KeyEvent.VK_3 ) {
 				sine.setBuffer(Buffer.SAW);
+				sineTwo.setBuffer(Buffer.SAW);
 				frame.getContentPane().setBackground(Color.BLUE);
 			}
 			
@@ -126,6 +129,7 @@ public class Hello_Midi implements KeyListener {
 				sine.setFrequency(frequency);
 				sineTwo.setFrequency(frequency / 2);
 				frame.getContentPane().setBackground(Color.CYAN);
+				
 			
 			}
 			if(octave == KeyEvent.VK_SHIFT) {
@@ -135,6 +139,7 @@ public class Hello_Midi implements KeyListener {
 				gainGlide.setValue(0.9f);
 				sine.setFrequency(frequency * 2);
 				frame.getContentPane().setBackground(Color.yellow);
+				
 			}
 			if(sineSquare == KeyEvent.VK_ENTER) {
 				System.exit(0);
@@ -179,7 +184,7 @@ public class Hello_Midi implements KeyListener {
 		} 
 	}
 	public void keyDemo(){
-		
+	
 		
 		frame = new JFrame();
 		frame.setSize( 400, 400);
